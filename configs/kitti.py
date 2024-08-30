@@ -5,7 +5,7 @@ _CN.name = 'kitti'
 _CN.suffix ='kitti'
 _CN.gamma = 0.85
 _CN.max_flow = 400
-_CN.batch_size = 6
+_CN.batch_size = 1
 _CN.sum_freq = 100
 _CN.val_freq = 499999999
 _CN.image_size = [432, 960]
@@ -16,7 +16,7 @@ _CN.critical_params = []
 _CN.transformer = 'percostformer3'
 
 ### change the path here
-_CN.restore_ckpt = "logs/PATH-TO-FINAL-FILE/final"
+_CN.restore_ckpt = "logs/flowformer/percostformer3/vert_c_dim[64]encoder_depth[3]vertical_encoder_attn[twins]use_patch[False]flow_or_pe[and]use_rpe[False]dropout[0.0]detach_local[False]expand_factor[4](08_30_04_46)/final"
 
 _CN.percostformer3 = CN()
 _CN.percostformer3.pe = 'linear'
