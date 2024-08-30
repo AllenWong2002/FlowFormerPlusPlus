@@ -1,5 +1,7 @@
 mae_mask/
 __pycache__/
+checkpoints/
+datasets/
 
 core/optimizer/__pycache__/__init__.cpython-38.pyc
 logs/
