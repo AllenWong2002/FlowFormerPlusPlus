@@ -33,18 +33,19 @@ class PCBlock4_Deep_nopool_res(nn.Module):
 class SKMotionEncoder6_Deep_nopool_res(nn.Module):
     def __init__(self, args):
         super().__init__()
-        cor_planes = 81*args.cost_heads_num+args.query_latent_dim
-        self.convc1 = PCBlock4_Deep_nopool_res(cor_planes, 256, k_conv=args.k_conv)
+        self.cor_planes = cor_planes = (args.corr_radius*2+1)**2*args.cost_heads_num*args.corr_levels
+        self.convc1 = PCBlock4_Deep_nopool_res(cor_planes, 128, k_conv=args.k_conv)
         self.convc2 = PCBlock4_Deep_nopool_res(256, 192, k_conv=args.k_conv)
 
-        self.convf1_ = nn.Conv2d(2, 128, 1, 1, 0)
+        self.convf1_ = nn.Conv2d(4, 128, 1, 1, 0)
         self.convf2 = PCBlock4_Deep_nopool_res(128, 64, k_conv=args.k_conv)
 
-        self.conv = PCBlock4_Deep_nopool_res(64+192, 128-2, k_conv=args.k_conv)
+        self.conv = PCBlock4_Deep_nopool_res(64+192, 128-4, k_conv=args.k_conv)
 
 
     def forward(self, flow, corr):
-        cor = F.gelu(self.convc1(corr))
+        corr1, corr2 = torch.split(corr, [self.cor_planes, self.cor_planes], dim=1)
+        cor = F.gelu(torch.cat([self.convc1(corr1), self.convc1(corr2)], dim=1))
 
         cor = self.convc2(cor)
 
@@ -57,7 +58,7 @@ class SKMotionEncoder6_Deep_nopool_res(nn.Module):
         return torch.cat([out, flow], dim=1)
 
 
-class SKUpdateBlock6_Deep_nopoolres_AllDecoder(nn.Module):
+class SKUpdateBlock6_Deep_nopoolres_AllDecoder2(nn.Module):
     def __init__(self, args, hidden_dim):
         super().__init__()
         self.args = args
@@ -67,12 +68,12 @@ class SKUpdateBlock6_Deep_nopoolres_AllDecoder(nn.Module):
         
         self.encoder = SKMotionEncoder6_Deep_nopool_res(args)
         self.gru = PCBlock4_Deep_nopool_res(128+hidden_dim+hidden_dim+128, 128, k_conv=args.PCUpdater_conv)
-        self.flow_head = PCBlock4_Deep_nopool_res(128, 2, k_conv=args.k_conv)
+        self.flow_head = PCBlock4_Deep_nopool_res(128, 4, k_conv=args.k_conv)
 
         self.mask = nn.Sequential(
             nn.Conv2d(128, 256, 3, padding=1),
             nn.ReLU(inplace=True),
-            nn.Conv2d(256, 64*9, 1, padding=0))
+            nn.Conv2d(256, 64*9*2, 1, padding=0))
 
         self.aggregator = Aggregate(args=self.args, dim=128, dim_head=128, heads=1)
 

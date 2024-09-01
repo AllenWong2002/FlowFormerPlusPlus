@@ -12,12 +12,12 @@ def process_transformer_cfg(cfg):
     return log_dir
 
 def process_cfg(cfg):
-    log_dir = 'logs/' + cfg.name + '/' + cfg.transformer + '/'
+    log_dir = 'logs/' + cfg.name + '/' + cfg.network + '/'
     critical_params = [cfg.trainer[key] for key in cfg.critical_params]
     for name, param in zip(cfg["critical_params"], critical_params):
         log_dir += "{:s}[{:s}]".format(name, str(param))
 
-    log_dir += process_transformer_cfg(cfg[cfg.transformer])
+    log_dir += process_transformer_cfg(cfg[cfg.network])
 
     now = time.localtime()
     now_time = '{:02d}_{:02d}_{:02d}_{:02d}'.format(now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min)
@@ -26,4 +26,4 @@ def process_cfg(cfg):
     os.makedirs(log_dir)
 
     shutil.copytree('configs', f'{log_dir}/configs')
-    shutil.copytree('core/FlowFormer', f'{log_dir}/FlowFormer')
+    shutil.copytree('core', f'{log_dir}/core')

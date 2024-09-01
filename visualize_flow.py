@@ -1,6 +1,6 @@
 import itertools
 from utils.utils import InputPadder, forward_interpolate
-from core.FlowFormer import build_flowformer
+from core.Networks import build_network
 import os.path as osp
 import math
 import cv2
@@ -147,7 +147,7 @@ def prepare_image(root_dir, viz_root_dir, fn1, fn2, keep_size):
 def build_model():
     print(f"building  model...")
     cfg = get_cfg()
-    model = torch.nn.DataParallel(build_flowformer(cfg))
+    model = torch.nn.DataParallel(build_network(cfg))
     model.load_state_dict(torch.load(cfg.model))
 
     model.cuda()

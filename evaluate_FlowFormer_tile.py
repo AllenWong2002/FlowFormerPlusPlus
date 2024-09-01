@@ -17,7 +17,7 @@ import datasets
 from utils import flow_viz
 from utils import frame_utils
 
-from core.FlowFormer import build_flowformer
+from core.Networks import build_network
 from raft import RAFT
 
 from utils.utils import InputPadder, forward_interpolate
@@ -322,7 +322,7 @@ if __name__ == '__main__':
     cfg.update(vars(args))
 
     print(cfg)
-    model = torch.nn.DataParallel(build_flowformer(cfg))
+    model = torch.nn.DataParallel(build_network(cfg))
     model.load_state_dict(torch.load(cfg.model))
 
     model.cuda()

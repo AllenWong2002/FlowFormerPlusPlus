@@ -12,17 +12,17 @@ class InputPadder:
         pad_wd = (((self.wd // 8) + 1) * 8 - self.wd) % 8
         self.mode = mode
         if mode == 'sintel':
-            self._pad = [pad_wd//2, pad_wd - pad_wd//2, pad_ht//2, pad_ht - pad_ht//2]
+            self._pad = [pad_wd//2, pad_wd - pad_wd//2, pad_ht//2, pad_ht - pad_ht//2, 0, 0]
         elif mode == "downzero":
-            self._pad = [0, pad_wd, 0, pad_ht]
+            self._pad = [0, pad_wd, 0, pad_ht, 0, 0]
         else:
-            self._pad = [pad_wd//2, pad_wd - pad_wd//2, 0, pad_ht]
+            self._pad = [pad_wd//2, pad_wd - pad_wd//2, 0, pad_ht, 0, 0]
 
-    def pad(self, *inputs):
+    def pad(self, input):
         if self.mode == "downzero":
-            return [F.pad(x, self._pad) for x in inputs]
+            return F.pad(input, self._pad)
         else:
-            return [F.pad(x, self._pad, mode='replicate') for x in inputs]
+            return F.pad(input, self._pad, mode='replicate')
 
     def unpad(self,x):
         ht, wd = x.shape[-2:]

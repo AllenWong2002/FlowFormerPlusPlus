@@ -26,7 +26,7 @@ from loguru import logger as loguru_logger
 from core.utils.logger import Logger
 
 # from core.FlowFormer import FlowFormer
-from core.FlowFormer import build_flowformer
+from core.Networks import build_network
 
 # 嘗試導入自動混合精度（AMP）的GradScaler，如果PyTorch版本低於1.6則定義一個空的GradScaler類
 try:
@@ -52,7 +52,7 @@ def count_parameters(model):
 # 定義訓練函數
 def train(cfg):
     # 構建模型並使用DataParallel進行多GPU訓練
-    model = nn.DataParallel(build_flowformer(cfg))
+    model = nn.DataParallel(build_network(cfg))
     loguru_logger.info("Parameter Count: %d" % count_parameters(model))
 
     # 如果配置中提供了檢查點，則加載模型狀態
