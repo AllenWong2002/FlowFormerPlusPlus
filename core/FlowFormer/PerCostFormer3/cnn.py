@@ -268,6 +268,7 @@ class SmallEncoder(nn.Module):
 
         return x
 
+#############################################
 class ConvNets(nn.Module):
     def __init__(self, in_dim, out_dim, inter_dim, depth, stride=1):
         super(ConvNets, self).__init__()

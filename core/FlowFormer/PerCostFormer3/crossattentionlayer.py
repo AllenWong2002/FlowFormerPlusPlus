@@ -4,6 +4,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from .attention import BroadMultiHeadAttention
 
+from timm.models.layers import DropPath
+
 class CrossAttentionLayer(nn.Module):
     def __init__(self, qk_dim, v_dim, query_token_dim, tgt_token_dim, num_heads=8, attn_drop=0., proj_drop=0., drop_path=0., dropout=0.):
         super(CrossAttentionLayer, self).__init__()

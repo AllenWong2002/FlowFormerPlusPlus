@@ -41,10 +41,13 @@ class FlowDataset(data.Dataset):
         if self.is_test:
             img1 = frame_utils.read_gen(self.image_list[index][0])
             img2 = frame_utils.read_gen(self.image_list[index][1])
+
             img1 = np.array(img1).astype(np.uint8)[..., :3]
             img2 = np.array(img2).astype(np.uint8)[..., :3]
+
             img1 = torch.from_numpy(img1).permute(2, 0, 1).float()
             img2 = torch.from_numpy(img2).permute(2, 0, 1).float()
+            
             return img1, img2, self.extra_info[index]
 
         if not self.init_seed:
@@ -182,7 +185,7 @@ class FlyingThings3D(FlowDataset):
 
 
 class KITTI(FlowDataset):
-    def __init__(self, aug_params=None, split='training', root='datasets/KITTI'):
+    def __init__(self, aug_params=None, split='training', root='datasets/KITTI/'):
         super(KITTI, self).__init__(aug_params, sparse=True)
         if split == 'testing':
             self.is_test = True
@@ -251,7 +254,7 @@ def fetch_dataloader(args, TRAIN_DS='C+T+K+S+H'):
         train_dataset = KITTI(aug_params, split='training')
 
     train_loader = data.DataLoader(train_dataset, batch_size=args.batch_size, 
-        pin_memory=False, shuffle=True, num_workers=8, drop_last=True)
+        pin_memory=False, shuffle=True, num_workers=0, drop_last=True)
 
     print('Training with %d image pairs' % len(train_dataset))
     return train_loader
